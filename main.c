@@ -1,6 +1,9 @@
 #include <stdio.h>
 
-int add(int a, int b);
+int add(int a, int b)
+{
+    return a+b;
+}
 
 int max(int a, int b)
 {
