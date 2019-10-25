@@ -9,7 +9,7 @@
 #include<pthread.h>
 #include <mysql/mysql.h>
 
-int face(int);
+
 void Login();
 
 
@@ -26,55 +26,26 @@ void* fun(void* arg)
 		// }
 		// printf("recv(%d)=%s\n", c, buff);
 		// send(c, "ok", 2, 0);
-		int res = 0;
-		res = face(c);//denglu
-		switch (res)
-		{
-		case 0:
-			break;
-		case 1:
-			Login();//登录
-			break;
-		case 2:
-			//Registration();//注册
-			break;
-		case 3:
-			//Retrieve_password();//找回密码
-			break;
-		
-		default:
-			printf("You choose a invalid number\n");
-			fflush(stdout);
-			break;
-		}
+
+		//验证手机号密码
+		char str1[65] = { 0 };
+		int res1 = recv(c,str1,65,0);
+		assert(res1 <= 0);		
+		Login(str1);
+
+		//
 	}
-	printf("one client over(%d)", c);
+	printf("one client is over(%d)", c);
 	fflush(stdout);
 	close(c);
 }
 
-int face(int c)
+
+
+void Login(char* str)
 {
-	char* str1 = "智能停车场;1.登录;2.注册;3.找回密码;0.退出.";
-	send(c,str1,strlen(str1) + 1,0);
-	char choose = '4';
-	recv(c, &choose, 1, 0);
-
-	int res = (choose - 48);//选择
-
-	return res;
-}
-
-void Login()
-{
-	printf("输入手机号:");
-	char phoneNum[15] = { 0 };
-	scanf("%s",phoneNum);
-
-	printf("输入密码:");
-	char password[50] = {0};
-	scanf("%s",password);
-
+	//chuli shouji mima
+	char res[2][50] = { 0 };
 	MYSQL mysql;
     mysql_init(&mysql);
     
