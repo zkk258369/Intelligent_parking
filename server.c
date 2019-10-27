@@ -19,23 +19,38 @@ void* fun(void* arg)
 
 	while (1)
 	{
-		//验证 手机号密码
-		char str1[64] = { 0 };
-		int res1 = 0;
-		res1 = recv(c,str1,63,0);
-		printf("%d\n",res1);
-		assert(res1 <= 0);		
-		if(Login(str1))
-		{
-			send(c,"true",4,0);
-		}
-		else
-		{
-			send(c,"false",5,0);
-		}
-		printf("Login is over!\n");
-		break;
-		//
+		char str[128] = { 0 };
+		int res = 0;
+		res = recv(c,str,127,0);
+		char strtmp[128] = { 0 };
+		strcpy(strtmp,str);
+        assert(res > 0);
+
+        char* saveptr = NULL;
+        char* choose_char = NULL;
+		choose_char = strtok_r(str,"|",&saveptr);
+		printf("strtmp = %s\n", strtmp);
+   
+    	int choose_int = choose_char[0] - 48;
+    	switch(choose_int)
+    	{
+    		case 0:
+    			break;
+    		case 1:
+		    	if(Login(strtmp))
+				{
+					send(c,"true",4,0);
+				}
+				else
+				{
+					send(c,"false",5,0);
+				}
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+    	}
 	}
 	printf("one client is over(%d)\n", c);
 	fflush(stdout);
@@ -47,13 +62,16 @@ void* fun(void* arg)
 int Login(char* str)
 {
 	//chuli shouji mima
+	char* choose_char = NULL;
 	char* phoneNum = NULL;
 	char* password = NULL;
 	char* saveptr = NULL;
-	phoneNum = strtok_r(str,"|",&saveptr);//shoujihao
-	password = strtok_r(NULL,"|",&saveptr);//mima
-	printf("%s\n",phoneNum);
-	printf("%s\n",password);
+	choose_char = strtok_r(str,"|",&saveptr);
+	phoneNum = strtok_r(NULL,"|",&saveptr);
+	password = strtok_r(NULL,"|",&saveptr);
+	printf("choose_char = %s\n",choose_char);
+	printf("phoneNum = %s\n",phoneNum);
+	printf("password = %s\n",password);
 
     
     MYSQL mysql;

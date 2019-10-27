@@ -20,7 +20,7 @@ int connect_sock()
 
 	int res = connect(sockfd, (struct sockaddr*)&saddr, sizeof(saddr));
 	assert(res != -1);
-	return res;
+	return sockfd;
 }
 
 int face()
@@ -41,22 +41,21 @@ void Login(int sockfd)
 	//printf "\033c";
 	printf("\n\t欢迎进入登录界面\n\n");
 	printf("输入手机号:");
-	char phoneNum[13] = { 0 };
+	char phoneNum[12] = { 0 };
 	scanf("%s",phoneNum);
-	phoneNum[11] = '|';
+	strcat(phoneNum,"|");
 
 	printf("输入密码:");
 	char password[50] = {0};
 	scanf("%s",password);
 
-	char str[64] = { 0 };
-	sprintf(str,"%.13s%.50s",phoneNum,password);
+	char str[128] = { 0 };
+	sprintf(str,"1|%.12s%.50s",phoneNum,password);
 	puts(str);
-	printf("%d\n",strlen(str));
 
-	printf("send = %d\n",send(sockfd,str,strlen(str),0));
+	send(sockfd,str,strlen(str),0);
 	memset(str,0,sizeof(str));
-	printf("recv = %d\n",recv(sockfd,str,63,0));
+	recv(sockfd,str,127,0);
 	if(strcmp(str,"true") == 0)
 	{
 		printf("Login true\n");
@@ -71,16 +70,25 @@ int main()
 {
 	int sockfd = connect_sock();
 
-	int choose = face();
-
-	switch(choose)
+	while(1)
 	{
-		case 0:
-			break;
-		case 1:
-			Login(sockfd);
-			break;
+		int choose = face();
+
+		switch(choose)
+		{
+			case 0:
+				break;
+			case 1:
+				Login(sockfd);
+				break;
+			case 2:
+
+				break;
+			case 3:
+				break;
+		}
 	}
+
 
 
 	close(sockfd);
