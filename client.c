@@ -55,7 +55,7 @@ int main()
 	int sockfd = connect_sock();
 	int choose = face();
 
-	switch(res)
+	switch(choose)
 	{
 		case 0:
 			break;

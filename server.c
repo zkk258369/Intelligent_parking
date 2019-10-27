@@ -27,7 +27,7 @@ void* fun(void* arg)
 		// printf("recv(%d)=%s\n", c, buff);
 		// send(c, "ok", 2, 0);
 
-		//验证手机号密码
+		//验证 手机号密码
 		char str1[65] = { 0 };
 		int res1 = recv(c,str1,65,0);
 		assert(res1 <= 0);		
@@ -45,32 +45,68 @@ void* fun(void* arg)
 void Login(char* str)
 {
 	//chuli shouji mima
-	char res[2][50] = { 0 };
-	MYSQL mysql;
-    mysql_init(&mysql);
+	char message[2][50] = { 0 };
+	char* saveptr = NULL;
+	message[0] = strtok_r(str,";",&saveptr);//shoujihao
+	message[1] = strtok_r(NULL,";",&saveptr);//mima
+
     
-    if ( !mysql_real_connect(&mysql,"localhost","root",NULL,"intelligent_park",0,NULL,0) )
-    {
-        printf("error connect!\n");
-    }
-    else
-    {
-        printf("sucess connect!\n");
-    }
-
-    char * str_sql = "insert into ite_p_member values(\"1025000001\",\"yangzhao\",\"man\",15947191111,1998-09-22,12345)";
-
-    int res = mysql_real_query(&mysql,str_sql,strlen(str_sql));
-    if ( res )
-    {
-        printf("insert failed\n");
-    }
-    else
-    {
-        printf("insert sucess\n");
-    }
-
-    mysql_close(&mysql);
+    MYSQL mysql;
+ 	MYSQL_RES *res;
+ 	MYSQL_ROW row;
+ 	char *query;
+ 	int flag, t;
+ 	mysql_init(&mysql);
+ 	if(!mysql_real_connect(&mysql, "localhost", "root",NULL, "intelligent_park", 0, NULL, 0)) 
+ 	{
+ 		printf("Failed to connect to Mysql!\n");
+ 		return 0;
+ 	}
+ 	else 
+ 	{
+ 		printf("Connected to Mysql successfully!\n");
+ 	}
+ 	
+ 	query = "select * from intelligent_park";
+ 	/*查询，成功则返回0*/
+ 	flag = mysql_real_query(&mysql, query, (unsigned int)strlen(query));
+ 	if(flag) 
+ 	{
+ 		printf("Query failed!\n");
+ 		return 0;
+ 	}
+ 	else 
+ 	{
+ 	printf("[%s] made...\n", query);
+ 	}
+ 	/*mysql_store_result讲所有的查询结果读取到client*/
+ 	res = mysql_store_result(&mysql);
+ 	/*mysql_fetch_row检索结果集的下一行*/ 
+ 	while(row = mysql_fetch_row(res)) 
+ 	{
+ 		/*mysql_num_fields返回结果集中的字段数目*/
+ 		if(strcpy(row[0],message[0] == 0)
+ 		{
+ 			if(strcpy(row[5],message[1]) == 0)
+ 			{
+ 				send();//mimazhengque
+ 			}
+ 			else
+ 			{
+ 				//mima huozhe zhanghao cuowu
+ 			}
+ 		}
+ 		else
+ 		{
+ 			continue;
+ 		}
+ 		for(t=0; t<mysql_num_fields(res); t++)
+ 		{
+ 			printf("%s\t", row[t]);
+ 		}
+ 		printf("\n");
+ 	}
+ 	mysql_close(&mysql); 
 }
 
 
