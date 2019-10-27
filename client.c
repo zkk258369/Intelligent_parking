@@ -52,9 +52,9 @@ void Login(int sockfd)
 	char str[64] = { 0 };
 	sprintf(str,"%.13s%.50s",phoneNum,password);
 	puts(str);
-	printf("%d\n",strlen(str) );
+	printf("%d\n",strlen(str));
 
-	printf("send = %d\n",send(sockfd,str,strlen(str),MSG_NOSIGNAL));
+	printf("send = %d\n",send(sockfd,str,strlen(str),0));
 	memset(str,0,sizeof(str));
 	printf("recv = %d\n",recv(sockfd,str,63,0));
 	if(strcmp(str,"true") == 0)
@@ -70,6 +70,7 @@ void Login(int sockfd)
 int main()
 {
 	int sockfd = connect_sock();
+
 	int choose = face();
 
 	switch(choose)
@@ -82,6 +83,6 @@ int main()
 	}
 
 
-
+	close(sockfd);
 	exit(0);
 }
