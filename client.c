@@ -16,7 +16,7 @@ int connect_sock()
 	memset(&saddr, 0, sizeof(saddr));
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(6000);
-	saddr.sin_addr.s_addr = inet_addr("192.168.43.244");
+	saddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	int res = connect(sockfd, (struct sockaddr*)&saddr, sizeof(saddr));
 	assert(res != -1);
@@ -32,22 +32,39 @@ int face()
 	printf("0.退出\n");
 	printf("请输入你的选择(数字):");
 	int choose = -1;
-	scanf("%d".&choose);
+	scanf("%d",&choose);
 	return choose;
 }
 
 void Login(int sockfd)
 {
+	//printf "\033c";
+	printf("\n\t欢迎进入登录界面\n\n");
 	printf("输入手机号:");
-	char phoneNum[15] = { 0 };
+	char phoneNum[13] = { 0 };
 	scanf("%s",phoneNum);
+	phoneNum[11] = '|';
 
 	printf("输入密码:");
 	char password[50] = {0};
 	scanf("%s",password);
-	char str[65] = { 0 };
-	sprintf(str,%s;%s,phoneNum,password);
-	send(sockfd,str,65,0);
+
+	char str[64] = { 0 };
+	sprintf(str,"%.13s%.50s",phoneNum,password);
+	puts(str);
+	printf("%d\n",strlen(str) );
+
+	printf("send = %d\n",send(sockfd,str,strlen(str),MSG_NOSIGNAL));
+	memset(str,0,sizeof(str));
+	printf("recv = %d\n",recv(sockfd,str,63,0));
+	if(strcmp(str,"true") == 0)
+	{
+		printf("Login true\n");
+	}
+	else 
+	{
+		printf("Login false\n");
+	}
 }
 
 int main()
@@ -63,24 +80,6 @@ int main()
 			Login(sockfd);
 			break;
 	}
-
-
-	//face()
-	// char str1[100] = { 0 };
-	// recv(sockfd, str1, 100, 0);
-	// char* tmp = NULL;
-	// tmp = strtok(str1,";");
-	// printf("\t%s\n",tmp);
-	// while(tmp)
-	// {
-	// 	tmp = strtok(NULL,";");
-	// 	printf("%s\n",tmp);
-	// }
-	// char choose[2] = -1;
-	// scanf("%s",&choose);
-	// send(sockfd,&choose,2,0);
-
-
 
 
 
