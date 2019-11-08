@@ -38,7 +38,7 @@ int face()
 
 void Login(int sockfd)
 {
-	//printf "\033c";
+	system("clear");
 	printf("\n\t欢迎进入登录界面\n\n");
 	printf("输入手机号:");
 	char phoneNum[12] = { 0 };
@@ -68,17 +68,20 @@ void Login(int sockfd)
 
 void Registration(int sockfd)
 {
+	char sex[10] = { 0 };
     char memberName[20] = { 0 };
-    char sex[6] = { 0 };
-    char phone[11] = { 0 };
+    char phone[12] = { 0 };
     char birthday[11] = { 0 };
-    char password[50] = { 0 };
+    char password[5] = { 0 };
+    system("clear");
     printf("\n\t欢迎进入注册界面\n\n");
     printf("会员名字：");
     scanf("%s",memberName);
+    puts(memberName);
     
     printf("性别：(man or woman)");
     scanf("%s",sex);
+    puts(sex);
     
     printf("手机号：");
     scanf("%s",phone);
@@ -90,7 +93,7 @@ void Registration(int sockfd)
     scanf("%s",password);
 
     char str[128] = { 0 };
-    sprintf(str,"2|%.20s|%.6s|%.11s|%.11s|%.50s",memberName,sex,phone,birthday,password);
+    sprintf(str,"2|%.20s|%.10s|%.11s|%.11s|%.5s",memberName,sex,phone,birthday,password);
     puts(str);
 
     send(sockfd,str,strlen(str),0);
