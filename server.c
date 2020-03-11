@@ -11,6 +11,7 @@
 
 
 int Login(char*);
+int Registration(char*);
 
 
 void* fun(void* arg)
@@ -47,6 +48,14 @@ void* fun(void* arg)
 				}
 				break;
 			case 2:
+                if(Registration(strtmp))
+                {
+                	send(c,"true",4,0);
+                }
+                else
+                {
+                	send(c,"false",5,0);
+                }
 				break;
 			case 3:
 				break;
@@ -69,11 +78,7 @@ int Login(char* str)
 	choose_char = strtok_r(str,"|",&saveptr);
 	phoneNum = strtok_r(NULL,"|",&saveptr);
 	password = strtok_r(NULL,"|",&saveptr);
-	printf("choose_char = %s\n",choose_char);
-	printf("phoneNum = %s\n",phoneNum);
-	printf("password = %s\n",password);
 
-    
     MYSQL mysql;
  	MYSQL_RES *res;
  	MYSQL_ROW row;
@@ -129,6 +134,97 @@ int Login(char* str)
 }
 
 
+int Registration(char* str )
+{
+	char* choose_char = NULL;
+    char* memberName = NULL;
+    char* sex = NULL;
+    char* phone = NULL;
+    char* birthday = NULL;
+    char* password = NULL;
+    char* saveptr = NULL;
+
+    choose_char = strtok_r(str,"|",&saveptr);
+    memberName = strtok_r(NULL,"|",&saveptr);
+    sex = strtok_r(NULL,"|",&saveptr);
+    printf("sex = %s\n",sex);
+    phone = strtok_r(NULL,"|",&saveptr);
+    birthday = strtok_r(NULL,"|",&saveptr);
+    password = strtok_r(NULL,"|",&saveptr);
+    
+    MYSQL mysql;
+    MYSQL mysql2;
+    MYSQL_RES* res;
+    MYSQL_ROW row;
+    char* query = NULL;
+    int flag;
+    int t;
+    mysql_init(&mysql);
+    mysql_init(&mysql2);
+
+
+    if(!mysql_real_connect(&mysql,"localhost","root",NULL,"information_schema",0,NULL,0))
+    {
+        printf("Resgistration Faild to connect to MYSQL information_schema!\n");
+        return 0;
+    }
+    else
+    {
+        printf("Resgistration Successfully to connect to MYSQL information_schema!\n");
+    }
+    query = "select table_rows from tables where TABLE_SCHEMA = 'intelligent_park' && table_name = 'ite_p_member' order by table_rows desc";
+    
+    flag = mysql_real_query(&mysql,query,(unsigned int)strlen(query));
+    if(flag)
+    {
+        printf("Query select table_rows from information_schema Failed!\n");
+    }
+    else
+    {
+        printf("Query select table_rows from information_schema Successfully!\n");
+    }
+
+    res = mysql_store_result(&mysql);
+    row = mysql_fetch_row(res);
+
+    //int tmp = atoi(row[0]);
+    //tmp++;
+    char* memberID = row[0];
+    //itoa(tmp,memberID,10);
+
+    mysql_close(&mysql);
+
+
+    if(!mysql_real_connect(&mysql2,"localhost","root",NULL,"intelligent_park",0,NULL,0))
+    {
+        printf("Resgistration Faild to connect intelligent_park to MYSQL\n");
+    }
+    else
+    {
+        printf("Resgistration connect intelligent_park to MYSQL successfully\n");
+    }
+
+    printf("begin\n");
+    puts(query);
+    char query1[1024] = {0};
+    sprintf(query1,"insert into ite_p_member(memberID,memberName,sex,phone,birthday,password) values(\"%.10s\",\"%.20s\",\"%.10s\",\"%.12s\",\"%.11s\",\"%.5s\")",memberID,memberName,sex,phone,birthday,password);
+    printf("end\n");
+    puts(query);
+
+    flag = mysql_real_query(&mysql2,query1,(unsigned)strlen(query1));
+    if ( flag )
+    {
+        printf("insert failed\n");
+    }
+    else
+    {
+        printf("insert sucess\n");
+    }
+    mysql_close(&mysql2);
+    return !flag;
+}
+
+
 int main()
 {
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0); //(协议族,流式传输, )
@@ -164,15 +260,6 @@ int main()
 		pthread_create(&id, NULL, fun, (void*)c);
 
 
-		////接收话语recv
-		//char buff[128] = { 0 };
-		//int n = recv(c, buff, 127, 0);//n 实际接收到的字节数
-		//printf("n = %d,buff = %s\n", n, buff);
-
-		////发送
-		//send(c, "ok", 2, 0);
-
-		//close(c);
 	}
 
 	exit(0);

@@ -38,7 +38,7 @@ int face()
 
 void Login(int sockfd)
 {
-	//printf "\033c";
+	system("clear");
 	printf("\n\t欢迎进入登录界面\n\n");
 	printf("输入手机号:");
 	char phoneNum[12] = { 0 };
@@ -66,6 +66,50 @@ void Login(int sockfd)
 	}
 }
 
+void Registration(int sockfd)
+{
+	char sex[10] = { 0 };
+    char memberName[20] = { 0 };
+    char phone[12] = { 0 };
+    char birthday[11] = { 0 };
+    char password[5] = { 0 };
+    system("clear");
+    printf("\n\t欢迎进入注册界面\n\n");
+    printf("会员名字：");
+    scanf("%s",memberName);
+    puts(memberName);
+    
+    printf("性别：(man or woman)");
+    scanf("%s",sex);
+    puts(sex);
+    
+    printf("手机号：");
+    scanf("%s",phone);
+
+    printf("请输入出生年月日：(2000-1-1)");
+    scanf("%s",birthday);
+
+    printf("请输入密码：(至多49位)");
+    scanf("%s",password);
+
+    char str[128] = { 0 };
+    sprintf(str,"2|%.20s|%.10s|%.11s|%.11s|%.5s",memberName,sex,phone,birthday,password);
+    puts(str);
+
+    send(sockfd,str,strlen(str),0);
+    memset(str,0,sizeof(str));
+    recv(sockfd,str,127,0);
+    if(strcmp(str,"true") == 0)
+    {
+        printf("Register true\n");
+    }
+    else 
+    {
+        printf("Register false\n");
+    }
+    
+}
+
 int main()
 {
 	int sockfd = connect_sock();
@@ -82,7 +126,7 @@ int main()
 				Login(sockfd);
 				break;
 			case 2:
-
+                Registration(sockfd);
 				break;
 			case 3:
 				break;
